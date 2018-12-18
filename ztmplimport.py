@@ -43,7 +43,7 @@ noverify = ""
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,description='Imports Zabbix templates from XML files. Default behaviour is to add missing elements and update any existing elements. Optionally elements that are missing from the XML file can be removed from existing template(s) as well.', epilog="""
 This program can use .ini style configuration files to retrieve the needed API connection information.
 To use this type of storage, create a conf file (the default is $HOME/.zbx.conf) that contains at least the [Zabbix API] section and any of the other parameters:
-       
+
  [Zabbix API]
  username=johndoe
  password=verysecretpassword
@@ -54,9 +54,9 @@ To use this type of storage, create a conf file (the default is $HOME/.zbx.conf)
 parser.add_argument('-u', '--username', help='User for the Zabbix api')
 parser.add_argument('-p', '--password', help='Password for the Zabbix api user')
 parser.add_argument('-a', '--api', help='Zabbix API URL')
-parser.add_argument('--no-verify', help='Disables certificate validation when using a secure connection',action='store_true') 
+parser.add_argument('--no-verify', help='Disables certificate validation when using a secure connection',action='store_true')
 parser.add_argument('-c','--config', help='Config file location (defaults to $HOME/.zbx.conf)')
-parser.add_argument('-v', '--verbose', help='Enables verbose output.',action='store_true') 
+parser.add_argument('-v', '--verbose', help='Enables verbose output.',action='store_true')
 parser.add_argument('-T', '--templates', help='List of XML template files to import.',required=True, nargs="+")
 parser.add_argument('-D', '--delete-missing', help='If a template already exists in Zabbix, any missing elements from the .XML will be removed from Zabbix as well.',action='store_true')
 parser.add_argument('-U', '--update', help='If a template already exists in Zabbix, update any changes in template elements.',action='store_true')
@@ -106,7 +106,7 @@ if not username:
 
 if not password:
  sys.exit("Error: API Password not set")
- 
+
 if not api:
  sys.exit("Error: API URL is not set")
 
@@ -141,7 +141,7 @@ else:
 # set import rules, see https://www.zabbix.com/documentation/3.0/manual/api/reference/configuration/import
 rules={}
 rules['templates']={'createMissing': create, 'updateExisting':update}
-rules['applications']={'createMissing': create, 'updateExisting': update, 'deleteMissing': delete}
+rules['applications']={'createMissing': create, 'deleteMissing': delete}
 rules['discoveryRules']={'createMissing': create, 'updateExisting': update, 'deleteMissing': delete}
 rules['graphs']={'createMissing': create, 'updateExisting':update, 'deleteMissing': delete}
 rules['groups']={'createMissing': create}
@@ -150,10 +150,10 @@ rules['templateLinkage']={'createMissing': create}
 rules['templateScreens']={'createMissing': create, 'updateExisting':update, 'deleteMissing': delete}
 rules['triggers']={'createMissing': create, 'updateExisting':update, 'deleteMissing': delete}
 # Valuemap imports are a Zabbix 3.x.x feature
-if zversion.startswith('3.'):
-    rules['valueMaps']={'createMissing':create, 'updateExisting':update}
+# if zversion.startswith('4.'):
+rules['valueMaps']={'createMissing':create, 'updateExisting':update}
 
-# Parse file list 
+# Parse file list
 for template in args.templates:
     Continue=True
     if Continue:
@@ -170,7 +170,7 @@ for template in args.templates:
 
     if Continue:
     	try:
-            # verify if the file is a valid XML        
+            # verify if the file is a valid XML
             tree = ET.fromstring(xml)
     	except:
             # If the file can't isn't a valid XML, exit with error
